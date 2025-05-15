@@ -12,6 +12,7 @@ import {
   CardContent,
   CircularProgress,
   Paper,
+  Link
 } from "@mui/material";
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 
@@ -142,6 +143,7 @@ export default function GuildInfoSearch() {
     <Container maxWidth="lg" style={{ marginTop: "2rem", marginBottom: "2rem" }}>
       <Typography variant="h4" gutterBottom align="center">
         Albion Guild Info Lookup
+        made by <Link href="https://twitch.tv/muutmoku">MuutMoku</Link>
       </Typography>
 
       <FormControl fullWidth margin="normal">
