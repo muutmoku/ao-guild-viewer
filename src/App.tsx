@@ -11,14 +11,9 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper,
 } from "@mui/material";
+import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 
 interface Guild {
   Id: string;
@@ -111,10 +106,40 @@ export default function GuildInfoSearch() {
     }
     setLoading(false);
   };
-  console.log(members);
+
+  const columns: MRT_ColumnDef<Member>[] = [
+    {
+      accessorKey: 'Name',
+      header: 'Name',
+    },
+    {
+      accessorKey: 'LifetimeStatistics.Gathering.Fiber.Total',
+      header: 'Fiber'
+    },
+    {
+      accessorKey: 'LifetimeStatistics.Gathering.Hide.Total',
+      header: 'Hide'
+    },
+    {
+      accessorKey: 'LifetimeStatistics.Gathering.Ore.Total',
+      header: 'Ore'
+    },
+    {
+      accessorKey: 'LifetimeStatistics.Gathering.Rock.Total',
+      header: 'Rock'
+    },
+    {
+      accessorKey: 'LifetimeStatistics.Gathering.Wood.Total',
+      header: 'Wood'
+    },
+    {
+      accessorKey: 'LifetimeStatistics.FishingFame',
+      header: "Fishing"
+    }
+  ];
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: "2rem" }}>
+    <Container maxWidth="lg" style={{ marginTop: "2rem", marginBottom: "2rem" }}>
       <Typography variant="h4" gutterBottom align="center">
         Albion Guild Info Lookup
       </Typography>
@@ -166,34 +191,9 @@ export default function GuildInfoSearch() {
       )}
 
       {members.length > 0 && (
-        <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Fishing</TableCell>
-                <TableCell>Fiber</TableCell>
-                <TableCell>Hide</TableCell>
-                <TableCell>Ore</TableCell>
-                <TableCell>Rock</TableCell>
-                <TableCell>Wood</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {members.map((member) => (
-                <TableRow key={member.Id}>
-                  <TableCell>{member.Name}</TableCell>
-                  <TableCell>{member.LifetimeStatistics.FishingFame}</TableCell>
-                  <TableCell>{member.LifetimeStatistics.Gathering.Fiber.Total}</TableCell>
-                  <TableCell>{member.LifetimeStatistics.Gathering.Hide.Total}</TableCell>
-                  <TableCell>{member.LifetimeStatistics.Gathering.Ore.Total}</TableCell>
-                  <TableCell>{member.LifetimeStatistics.Gathering.Rock.Total}</TableCell>
-                  <TableCell>{member.LifetimeStatistics.Gathering.Wood.Total}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Paper style={{ marginTop: "2rem" }}>
+          <MaterialReactTable columns={columns} data={members} />
+        </Paper>
       )}
     </Container>
   );
