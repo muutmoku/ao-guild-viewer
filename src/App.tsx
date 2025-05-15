@@ -11,6 +11,13 @@ import {
   Card,
   CardContent,
   CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
 
 interface Guild {
@@ -27,10 +34,45 @@ interface SearchResponse {
   guilds: Guild[];
 }
 
+interface Gathering {
+  Fiber: {
+    Total: number;
+  };
+  Hide: {
+    Total: number;
+  };
+  Ore: {
+    Total: number;
+  };
+  Rock: {
+    Total: number;
+  };
+  Wood: {
+    Total: number;
+  };
+}
+
+interface LifetimeStatistics {
+  FishingFame: number;
+  Gathering: Gathering;
+}
+
+interface Member {
+  Name: string;
+  Id: string;
+  GuildName: string;
+  KillFame: number;
+  FameRatio: number;
+  AverageItemPower: number;
+  LastOnlineAt: string;
+  LifetimeStatistics: LifetimeStatistics;
+}
+
 export default function GuildInfoSearch() {
   const [server, setServer] = useState<string>("EU");
   const [guildName, setGuildName] = useState<string>("");
   const [guildInfo, setGuildInfo] = useState<Guild | null>(null);
+  const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSearch = async () => {
@@ -52,16 +94,24 @@ export default function GuildInfoSearch() {
 
       const guildId = guild.Id;
       const guildInfoUrl = `https://corsproxy.io/?url=https://gameinfo${domainSuffix}.albiononline.com/api/gameinfo/guilds/${guildId}`;
-      const guildInfoRes = await fetch(guildInfoUrl);
-      const guildInfoData: Guild = await guildInfoRes.json();
+      const guildMembersUrl = `https://corsproxy.io/?url=https://gameinfo${domainSuffix}.albiononline.com/api/gameinfo/guilds/${guildId}/members`;
+      const [guildInfoRes, membersRes] = await Promise.all([
+        fetch(guildInfoUrl),
+        fetch(guildMembersUrl),
+      ]);
 
+      const guildInfoData: Guild = await guildInfoRes.json();
+      const membersData: Member[] = await membersRes.json();
+    
       setGuildInfo({ ...guildInfoData, region: server });
+      setMembers(membersData);
     } catch (err) {
       console.error(err);
       alert("Failed to fetch guild info.");
     }
     setLoading(false);
   };
+  console.log(members);
 
   return (
     <Container maxWidth="sm" style={{ marginTop: "2rem" }}>
@@ -113,6 +163,37 @@ export default function GuildInfoSearch() {
             <Typography><strong>Member Count:</strong> {guildInfo.MemberCount}</Typography>
           </CardContent>
         </Card>
+      )}
+
+      {members.length > 0 && (
+        <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Fishing</TableCell>
+                <TableCell>Fiber</TableCell>
+                <TableCell>Hide</TableCell>
+                <TableCell>Ore</TableCell>
+                <TableCell>Rock</TableCell>
+                <TableCell>Wood</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {members.map((member) => (
+                <TableRow key={member.Id}>
+                  <TableCell>{member.Name}</TableCell>
+                  <TableCell>{member.LifetimeStatistics.FishingFame}</TableCell>
+                  <TableCell>{member.LifetimeStatistics.Gathering.Fiber.Total}</TableCell>
+                  <TableCell>{member.LifetimeStatistics.Gathering.Hide.Total}</TableCell>
+                  <TableCell>{member.LifetimeStatistics.Gathering.Ore.Total}</TableCell>
+                  <TableCell>{member.LifetimeStatistics.Gathering.Rock.Total}</TableCell>
+                  <TableCell>{member.LifetimeStatistics.Gathering.Wood.Total}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Container>
   );
