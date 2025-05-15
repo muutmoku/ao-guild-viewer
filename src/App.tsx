@@ -38,7 +38,7 @@ export default function GuildInfoSearch() {
     setLoading(true);
     const domainSuffix = server === "EU" ? "-am" : server === "Asia" ? "-sgp" : "";
     try {
-      const searchUrl = `https://gameinfo${domainSuffix}.albiononline.com/api/gameinfo/search?q=${encodeURIComponent(guildName)}`;
+      const searchUrl = `https://corsproxy.io/?url=https://gameinfo${domainSuffix}.albiononline.com/api/gameinfo/search?q=${encodeURIComponent(guildName)}`;
       const searchRes = await fetch(searchUrl);
       const searchData: SearchResponse = await searchRes.json();
 
@@ -51,7 +51,7 @@ export default function GuildInfoSearch() {
       }
 
       const guildId = guild.Id;
-      const guildInfoUrl = `https://gameinfo${domainSuffix}.albiononline.com/api/gameinfo/guilds/${guildId}`;
+      const guildInfoUrl = `https://corsproxy.io/?url=https://gameinfo${domainSuffix}.albiononline.com/api/gameinfo/guilds/${guildId}`;
       const guildInfoRes = await fetch(guildInfoUrl);
       const guildInfoData: Guild = await guildInfoRes.json();
 
@@ -110,8 +110,6 @@ export default function GuildInfoSearch() {
             <Typography><strong>ID:</strong> {guildInfo.Id}</Typography>
             <Typography><strong>Alliance:</strong> {guildInfo.AllianceId || "None"}</Typography>
             <Typography><strong>Region:</strong> {guildInfo.region}</Typography>
-            <Typography><strong>Kill Fame:</strong> {guildInfo.KillFame.toLocaleString()}</Typography>
-            <Typography><strong>Death Fame:</strong> {guildInfo.DeathFame.toLocaleString()}</Typography>
             <Typography><strong>Member Count:</strong> {guildInfo.MemberCount}</Typography>
           </CardContent>
         </Card>
