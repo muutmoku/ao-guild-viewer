@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
@@ -71,19 +71,41 @@ export default function GuildInfoSearch() {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSearch = async () => {
-    if (!guildName) return;
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const guildParam = params.get("guild");
+    const serverParam = params.get("server");
+    if (guildParam) setGuildName(guildParam);
+    if (serverParam) setServer(serverParam);
+    if (guildParam) {
+      handleSearch(guildParam, serverParam || server);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSearch = async (name?: string, srv?: string) => {
+    const searchName = name || guildName;
+    const selectedServer = srv || server;
+    if (!searchName) return;
     setLoading(true);
-    const domainSuffix = server === "EU" ? "-am" : server === "Asia" ? "-sgp" : "";
+
+    // Update query parameters
+    const newParams = new URLSearchParams();
+    newParams.set("guild", searchName);
+    newParams.set("server", selectedServer);
+    window.history.pushState({}, '', `${window.location.pathname}?${newParams.toString()}`);
+
+    const domainSuffix = selectedServer === "EU" ? "-am" : selectedServer === "Asia" ? "-sgp" : "";
     try {
-      const searchUrl = `https://corsproxy.io/?url=https://gameinfo${domainSuffix}.albiononline.com/api/gameinfo/search?q=${encodeURIComponent(guildName)}`;
+      const searchUrl = `https://corsproxy.io/?url=https://gameinfo${domainSuffix}.albiononline.com/api/gameinfo/search?q=${encodeURIComponent(searchName)}`;
       const searchRes = await fetch(searchUrl);
       const searchData: SearchResponse = await searchRes.json();
 
-      const guild = searchData.guilds.find(g => g.Name.toLowerCase() === guildName.toLowerCase());
+      const guild = searchData.guilds.find(g => g.Name.toLowerCase() === searchName.toLowerCase());
       if (!guild) {
         alert("Guild not found.");
         setGuildInfo(null);
+        setMembers([]);
         setLoading(false);
         return;
       }
@@ -99,7 +121,7 @@ export default function GuildInfoSearch() {
       const guildInfoData: Guild = await guildInfoRes.json();
       const membersData: Member[] = await membersRes.json();
     
-      setGuildInfo({ ...guildInfoData, region: server });
+      setGuildInfo({ ...guildInfoData, region: selectedServer });
       setMembers(membersData);
     } catch (err) {
       console.error(err);
@@ -172,7 +194,7 @@ export default function GuildInfoSearch() {
         fullWidth
         variant="contained"
         color="primary"
-        onClick={handleSearch}
+        onClick={() => handleSearch()}
         disabled={loading}
       >
         {loading ? <CircularProgress size={24} /> : "Search"}
