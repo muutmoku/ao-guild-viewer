@@ -1,46 +1,69 @@
-# Getting Started with Create React App
+# Albion Guild Info Viewer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a React + Material UI + Material React Table web application that allows users to search for guilds in Albion Online and view member information, including detailed gathering and fishing fame statistics.
 
-## Available Scripts
+## ✨ Features
 
-In the project directory, you can run:
+- 🔍 Search Albion Online guilds by name
+- 🌍 Select server region: EU / NA / Asia
+- 📊 View guild info including alliance, fame, member count
+- 👥 Display member list using `material-react-table`
+- 📦 Data includes gathering stats (Fiber, Hide, Ore, Rock, Wood) and fishing fame
+- 🌐 URL query params (`?guild=GuildName&server=ServerName`) support for shareable searches
 
-### `npm start`
+## 🖼️ Demo Screenshot
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+![screenshot](./screenshot.png)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🚀 Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js >= 18
+- npm or yarn
 
-### `npm run build`
+### Install
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm install
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Run locally
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npm start
+```
 
-### `npm run eject`
+This will start the development server at `http://localhost:3000`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## 🧪 Run Tests
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm test
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Includes basic UI and query param behavior tests using `@testing-library/react`.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 🛠️ Tech Stack
 
-## Learn More
+- React + TypeScript
+- Material UI
+- Material React Table
+- Testing Library + Jest
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📦 Deployment
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+This app can be deployed to GitHub Pages or Vercel.
+Supports URL query parameters for sharing searches:
+
+```
+https://yourdomain.com/?guild=Black%20Order&server=EU
+```
+
+## 📄 License
+
+MIT
+
+---
+
+Made by [MuutMoku](https://twitch.tv/muutmoku)
