@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
+  AppBar,
+  Toolbar,
   Container,
   Typography,
   TextField,
@@ -11,8 +13,7 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Paper,
-  Link
+  Paper
 } from "@mui/material";
 import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 
@@ -120,7 +121,7 @@ export default function GuildInfoSearch() {
 
       const guildInfoData: Guild = await guildInfoRes.json();
       const membersData: Member[] = await membersRes.json();
-    
+
       setGuildInfo({ ...guildInfoData, region: selectedServer });
       setMembers(membersData);
     } catch (err) {
@@ -162,63 +163,67 @@ export default function GuildInfoSearch() {
   ];
 
   return (
-    <Container maxWidth="lg" style={{ marginTop: "2rem", marginBottom: "2rem" }}>
-      <Typography variant="h4" gutterBottom align="center">
-        Albion Guild Info Lookup
-        made by <Link href="https://twitch.tv/muutmoku">MuutMoku</Link>
-      </Typography>
+    <>
+      <AppBar position="static">
+        <Toolbar sx={{ justifyContent: "center" }}>
+          <Typography variant="h6">
+            Albion Online Guild Viewer
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Container maxWidth="lg" style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="server-select-label">Server</InputLabel>
+          <Select
+            labelId="server-select-label"
+            value={server}
+            label="Server"
+            onChange={(e) => setServer(e.target.value)}
+          >
+            <MenuItem value="EU">EU</MenuItem>
+            <MenuItem value="NA">NA</MenuItem>
+            <MenuItem value="Asia">Asia</MenuItem>
+          </Select>
+        </FormControl>
 
-      <FormControl fullWidth margin="normal">
-        <InputLabel id="server-select-label">Server</InputLabel>
-        <Select
-          labelId="server-select-label"
-          value={server}
-          label="Server"
-          onChange={(e) => setServer(e.target.value)}
+        <TextField
+          fullWidth
+          label="Guild Name"
+          value={guildName}
+          onChange={(e) => setGuildName(e.target.value)}
+          margin="normal"
+        />
+
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={() => handleSearch()}
+          disabled={loading}
         >
-          <MenuItem value="EU">EU</MenuItem>
-          <MenuItem value="NA">NA</MenuItem>
-          <MenuItem value="Asia">Asia</MenuItem>
-        </Select>
-      </FormControl>
+          {loading ? <CircularProgress size={24} /> : "Search"}
+        </Button>
 
-      <TextField
-        fullWidth
-        label="Guild Name"
-        value={guildName}
-        onChange={(e) => setGuildName(e.target.value)}
-        margin="normal"
-      />
+        {guildInfo && (
+          <Card style={{ marginTop: "2rem" }}>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>
+                {guildInfo.Name}
+              </Typography>
+              <Typography><strong>ID:</strong> {guildInfo.Id}</Typography>
+              <Typography><strong>Alliance:</strong> {guildInfo.AllianceId || "None"}</Typography>
+              <Typography><strong>Region:</strong> {guildInfo.region}</Typography>
+              <Typography><strong>Member Count:</strong> {guildInfo.MemberCount}</Typography>
+            </CardContent>
+          </Card>
+        )}
 
-      <Button
-        fullWidth
-        variant="contained"
-        color="primary"
-        onClick={() => handleSearch()}
-        disabled={loading}
-      >
-        {loading ? <CircularProgress size={24} /> : "Search"}
-      </Button>
-
-      {guildInfo && (
-        <Card style={{ marginTop: "2rem" }}>
-          <CardContent>
-            <Typography variant="h5" gutterBottom>
-              {guildInfo.Name}
-            </Typography>
-            <Typography><strong>ID:</strong> {guildInfo.Id}</Typography>
-            <Typography><strong>Alliance:</strong> {guildInfo.AllianceId || "None"}</Typography>
-            <Typography><strong>Region:</strong> {guildInfo.region}</Typography>
-            <Typography><strong>Member Count:</strong> {guildInfo.MemberCount}</Typography>
-          </CardContent>
-        </Card>
-      )}
-
-      {members.length > 0 && (
-        <Paper style={{ marginTop: "2rem" }}>
-          <MaterialReactTable columns={columns} data={members} />
-        </Paper>
-      )}
-    </Container>
+        {members.length > 0 && (
+          <Paper style={{ marginTop: "2rem" }}>
+            <MaterialReactTable columns={columns} data={members} />
+          </Paper>
+        )}
+      </Container>
+    </>
   );
 }
